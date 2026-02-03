@@ -66,11 +66,8 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchAirQuality = async () => {
       try {
-        // Use CORS proxy to handle HTTP -> HTTPS mixed content issue
-        const apiUrl = 'http://air4thai.pcd.go.th/forappV2/getAQI_JSON.php';
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
-
-        const res = await fetch(proxyUrl);
+        // Use internal serverless function to bypass CORS
+        const res = await fetch('/api/air-quality');
         if (!res.ok) throw new Error('API fetch failed');
 
         const data = await res.json();
