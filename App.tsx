@@ -66,8 +66,14 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchAirQuality = async () => {
       try {
-        // Use internal serverless function to bypass CORS
-        const res = await fetch('/api/air-quality');
+        // Use internal serverless function on Vercel, but fallback to proxy on localhost
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiUrl = 'http://air4thai.pcd.go.th/forappV2/getAQI_JSON.php';
+        const fetchUrl = isLocal
+          ? `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`
+          : '/api/air-quality';
+
+        const res = await fetch(fetchUrl);
         if (!res.ok) throw new Error('API fetch failed');
 
         const data = await res.json();
